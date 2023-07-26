@@ -1,37 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Health : MonoBehaviour
 {
-    [SerializeField] private int _maxHealth;         
-    [SerializeField] private int _currentHealth;      
+    public float MaxHealth { get; private set; }
+    public float CurrentHealth { get; private set; }
 
-    public int MaxHealth
-    {
-        get { return _maxHealth; }
-    }
-
-    public int CurrentHealth
-    {
-        get { return _currentHealth; }
-    }
+    [SerializeField] private Image healthBar;
 
     public void Initialize(int maxHealth)
     {
-        _maxHealth = maxHealth;
-        _currentHealth = maxHealth;
+        MaxHealth = maxHealth;
+        CurrentHealth = MaxHealth;
+        UpdateHealthBar();
     }
 
     public void TakeDamage(int damage)
     {
-        _currentHealth -= damage;
-        _currentHealth = Mathf.Max(_currentHealth, 0);    
+        CurrentHealth -= damage;
+        CurrentHealth = Mathf.Max(CurrentHealth, 0);
+        UpdateHealthBar();
+
+        if (CurrentHealth <= 0)
+        {
+            DoDeath();
+        }
     }
 
     public void AddHealth(int amount)
     {
-        _currentHealth += amount;
-        _currentHealth = Mathf.Min(_currentHealth, _maxHealth);  
+        CurrentHealth += amount;
+        CurrentHealth = Mathf.Min(CurrentHealth, MaxHealth);
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar()
+    {
+        if (healthBar != null)
+        {
+            healthBar.fillAmount = CurrentHealth / MaxHealth;
+        }
+    }
+
+    private void DoDeath()
+    {
+        // Implement death behavior here if needed.
     }
 }

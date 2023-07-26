@@ -4,41 +4,44 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    public GunType gunType;
-    public GameObject nozzle;
+    [SerializeField] protected int damage;
+    [SerializeField] private float spread;
+    
+    public int currentMagazineAmmo;
+    public float fireRate;
+    public float reloadTime;
+    public float bulletSpread;
+    public bool canShoot;
+    public bool isFiring;
+    public bool stopFiring;
 
-    public float spread;
-
-    public bool isReloading = false;
-
-    public int currentClip;
-    public int maxClip;
-    public int currentAmmo;
-    public int maxAmmo;
-
-
-    public virtual void FiringTypePlayer(GameObject bullet)
+    public virtual void Shoot(GameObject prefab, GameObject nozzle)
     {
-        // Debug.Log("Firing from Gun Base Class");
+        Debug.Log("Base Gun Shooting");
     }
 
-    public virtual void StopFire(GameObject bullet)
-    {
-        // Debug.Log("Stopping from Gun Base Class");
-    }
-
-    public virtual void FiringTypeAI(GameObject bullet)
-    {
-        // Debug.Log("Firing from Gun Base Class");
-    }
-
-    public virtual void StopFiringAI()
+    public virtual void EnemyShoot(GameObject prefab, GameObject nozzle)
     {
 
     }
 
-    public virtual void Reload()
+    public virtual IEnumerator FireRateTimer()
     {
-        // Debug.Log("Reloading from Gun Base Class");
+        yield return new WaitForSeconds(fireRate);
+    }
+
+    public virtual void OnPointerDown()
+    {
+
+    }
+
+    public virtual void OnPointerUp()
+    {
+
+    }
+
+    public virtual IEnumerator EnemyReload()
+    {
+        yield return new WaitForSeconds(reloadTime);
     }
 }

@@ -4,16 +4,29 @@ using UnityEngine;
 
 public class Pickups : MonoBehaviour
 {
-    public GameObject[] guns;
-    public virtual void OnTriggerEnter2D(Collider2D other)
+    [SerializeField] protected Weapon _weapon;
+    public bool isWeaponPickup;
+
+    public virtual void Initialize(Weapon weapon)
     {
-        Destroy(gameObject);
+        _weapon = weapon;
+        Debug.Log($"{_weapon} has been initialized");
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Obstacles"))
+        if (collision.GetComponent<Inventory>() != null)
         {
+            Inventory playerInventory = collision.GetComponent<Inventory>();
+            if (isWeaponPickup)
+            {
+                playerInventory.LootWeapon(_weapon);
+            }
+            else
+            {
+                playerInventory.AddAmmo(_weapon);
+            }
+            LevelDesign.instance.RemovePickupFromList(this);
             Destroy(gameObject);
         }
     }

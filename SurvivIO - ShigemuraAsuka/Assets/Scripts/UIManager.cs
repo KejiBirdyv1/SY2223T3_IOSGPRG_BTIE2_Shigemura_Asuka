@@ -1,100 +1,132 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private int minimum;
-    [SerializeField] private int maximum;
-    [SerializeField] private int current;
-    [SerializeField] private Image Mask;
+    public static UIManager instance;
+   
+    [SerializeField] private Inventory inventory;
 
-    [SerializeField] private Button button;
+    [Header("Ammunition Text")]
+    [SerializeField] private TextMeshProUGUI pistolAmmoCountText;
+    [SerializeField] private TextMeshProUGUI automaticRifleAmmoCountText;
+    [SerializeField] private TextMeshProUGUI shotgunAmmoCountText;
 
-    [SerializeField] private Player player;
+    [Header("Weapons Text")]
+    [SerializeField] private TextMeshProUGUI primaryWeaponText;
+    [SerializeField] private TextMeshProUGUI secondaryWeaponText;
 
-    [SerializeField] private Sprite[] gunImages;
-    [SerializeField] private Image primaryButton;
-    [SerializeField] private Image secondaryButton;
+    [Header("Magazine Text")]
+    [SerializeField] private TextMeshProUGUI magazineAmmoCountText;
+    [SerializeField] private TextMeshProUGUI totalAmmoCountText;
+    public TextMeshProUGUI _reloadingText;
 
-    [SerializeField] private TextMeshProUGUI clipAmmo;
-    [SerializeField] private TextMeshProUGUI totalAmmo;
-
-    [SerializeField] private GameObject reloadText;
-    [SerializeField] private Slider hpSlider;
-
-    private Health health;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
-         health = player.GetComponent<Health>();
+        primaryWeaponText.SetText("No Weapon");
+        secondaryWeaponText.SetText("No Weapon");
+        _reloadingText.enabled = false;
     }
 
-    public void SetAlpha()
+    public void UpdateAmmoCount(Weapon weapon, int totalAmmoCount, int bagAmmoCount, int magazineAmmoCount)
     {
-        Color col = button.GetComponent<Image>().color;
-        col.a = 0.25f;
-        button.GetComponent<Image>().color = col;
+        switch (weapon)
+        {
+            case Weapon.Pistol:
+                pistolAmmoCountText.SetText(totalAmmoCount.ToString());
+                if (!inventory.primaryWeaponSelected &&
+                    inventory.secondaryWeapon == inventory.gunTypes[(int)Weapon.Pistol])
+                {
+                    if (magazineAmmoCount <= 0 && inventory.player.currentGun ==
+                        inventory.gunTypes[(int)Weapon.Pistol])
+                    {
+                        inventory.StartCoroutine("ReloadCurrentGun");
+                        _reloadingText.enabled = true;
+                    }
+                    magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
+                    totalAmmoCountText.SetText(bagAmmoCount.ToString());
+                }
+                break;
+            case Weapon.AutomaticRifle:
+                automaticRifleAmmoCountText.SetText(totalAmmoCount.ToString());
+                if (inventory.primaryWeaponSelected &&
+                    inventory.primaryWeapon == inventory.gunTypes[(int)Weapon.AutomaticRifle])
+                {
+                    if (magazineAmmoCount <= 0 && inventory.player.currentGun ==
+                        inventory.gunTypes[(int)Weapon.AutomaticRifle])
+                    {
+                        inventory.StartCoroutine("ReloadCurrentGun");
+                        _reloadingText.enabled = true;
+                    }
+                    magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
+                    totalAmmoCountText.SetText(bagAmmoCount.ToString());
+                }
+                break;
+            case Weapon.Shotgun:
+                shotgunAmmoCountText.SetText(totalAmmoCount.ToString());
+                if (inventory.primaryWeaponSelected &&
+                    inventory.primaryWeapon == inventory.gunTypes[(int)Weapon.Shotgun])
+                {
+                    if (magazineAmmoCount <= 0 && inventory.player.currentGun ==
+                        inventory.gunTypes[(int)Weapon.Shotgun])
+                    {
+                        inventory.StartCoroutine("ReloadCurrentGun");
+                        _reloadingText.enabled = true;
+                    }
+                    magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
+                    totalAmmoCountText.SetText(bagAmmoCount.ToString());
+                }
+                break;
+        }
     }
 
-    private void Update()
+    public void UpdateWeaponSlotText(Weapon weapon)
     {
-        hpSlider.value = (float)health.CurrentHealth / (float)health.MaxHealth;
-
-        // GetCurrentFill();
-        if (player._hasPrimary && player.onPrimaryWep)
+        switch (weapon)
         {
-            clipAmmo.text = player._primaryGun.GetComponent<Gun>().currentClip.ToString();
-            totalAmmo.text = player._primaryGun.GetComponent<Gun>().currentAmmo.ToString();
-
-            reloadText.SetActive(player._primaryGun.GetComponent<Gun>().isReloading);
-        }
-        else if (player._hasSecondary && !player.onPrimaryWep)
-        {
-            clipAmmo.text = player._secondaryGun.GetComponent<Gun>().currentClip.ToString();
-            totalAmmo.text = player._secondaryGun.GetComponent<Gun>().currentAmmo.ToString();
-
-            reloadText.SetActive(player._secondaryGun.GetComponent<Gun>().isReloading);
+            case Weapon.Pistol:
+                secondaryWeaponText.SetText("Pistol");
+                break;
+            case Weapon.AutomaticRifle:
+                primaryWeaponText.SetText("Automatic Rifle");
+                break;
+            case Weapon.Shotgun:
+                primaryWeaponText.SetText("Shotgun");
+                break;
+            case Weapon.RocketLauncher:
+                primaryWeaponText.SetText("Rocket Launcher");
+                break;
         }
     }
 
-    public void GunCheck()
+    public void UpdateCurrentWeaponAmmoCount(int magazineAmmoCount, int bagAmmoCount)
     {
-        if (player._primaryGun != null)
+        if (magazineAmmoCount <= 0)
         {
-            if (player._primaryGun.GetComponent<Gun>().gunType == GunType.AutomaticRifle)
-            {
-                primaryButton.sprite = gunImages[0];
-            }
-            else if (player._primaryGun.GetComponent<Gun>().gunType == GunType.Shotgun)
-            {
-                primaryButton.sprite = gunImages[1];
-            }
+            inventory.StartCoroutine("ReloadCurrentGun");
+            magazineAmmoCountText.SetText("0");
+            totalAmmoCountText.SetText(bagAmmoCount.ToString());
+            _reloadingText.enabled = true;
         }
-
-        if (player._secondaryGun != null)
+        else
         {
-            if (player._secondaryGun.GetComponent<Gun>().gunType == GunType.Pistol)
-            {
-                secondaryButton.sprite = gunImages[2];
-            }
+            magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
+            totalAmmoCountText.SetText(bagAmmoCount.ToString());
         }
     }
-
-    // private void GetCurrentFill()
-    // {
-    //     current = player.health;
-    //     float fillAmount = (float)current / (float)maximum;
-    //     Mask.fillAmount = fillAmount;
-    //     if (current > maximum)
-    //     {
-    //         current = maximum;
-    //     }
-    //     if (current < 0)
-    //     {
-    //         current = 0;
-    //     }
-    // }
 }

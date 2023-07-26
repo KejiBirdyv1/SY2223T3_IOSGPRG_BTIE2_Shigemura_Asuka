@@ -1,43 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Health))]
 public class Unit : MonoBehaviour
 {
-    [SerializeField] protected string _name;                   // The name of the unit.
-    [SerializeField] private Health _health;
-    [SerializeField] protected float _speed;
-    [SerializeField] protected Gun _currentGun;
+    [SerializeField] protected string unitName;
+    [SerializeField] protected float speed;
+    private Health health;
+    private Rigidbody2D rb2d;
+    public Gun currentGun;
 
-    [SerializeField] private GameObject _enemyHealthBar;
-    [SerializeField] private Slider _enemyHpSlider;
-
-    public GameObject _primaryGun;
-    public GameObject _secondaryGun;
-
-    public bool _hasPrimary;
-    public bool _hasSecondary;
-  
-    public GameObject _handle;
-
-    public void Initialize(string name, int maxHealth, float speed)
+    public virtual void Initialize(string name, int maxHealth, float unitSpeed)
     {
-        _name = name;
-        _health = gameObject.GetComponent<Health>();
-        _health.Initialize(maxHealth);
-        _speed = speed;
+        unitName = name;
+        health = GetComponent<Health>();
+        health.Initialize(maxHealth);
+        rb2d = GetComponent<Rigidbody2D>();
+        speed = unitSpeed;
+
+        Debug.Log($"{unitName} has been initialized");
     }
 
-    protected void HealthBar()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        GameObject healthBar = Instantiate(_enemyHealthBar, transform.position + new Vector3(0, 1, 0), Quaternion.identity, transform);
-        _enemyHpSlider = healthBar.transform.GetChild(0).GetComponentInChildren<Slider>();
+        Bullet bullet = collision.gameObject.GetComponent<Bullet>();
+        if (bullet != null)
+        {
+            health.TakeDamage(bullet.damage);
+            if (health.CurrentHealth <= 0)
+            {
+                DoDeath();
+            }
+            Destroy(collision.gameObject);
+            rb2d.velocity = Vector2.zero;
+        }
     }
 
-    protected void ManageHealth()
+    public virtual void Shoot()
     {
-        _enemyHpSlider.value = (float)_health.CurrentHealth / (float)_health.MaxHealth;
+        Debug.Log($"Unit is shooting");
+    }
+
+    public virtual float GetSpeed()
+    {
+        return speed;
+    }
+
+    public virtual void DoDeath()
+    {
+        // Put death behavior here if needed.
     }
 }

@@ -2,49 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickupsGun : Pickups
+public class PickupsGun : MonoBehaviour
 {
-    public GunType gunType;
+    [SerializeField] protected Weapon _weapon;
 
-    private UIManager hud;
-    private Player player;
-
-    private void Start()
+    public virtual void Initialize(Weapon weapon)
     {
-        hud = FindObjectOfType<UIManager>();
-        player = FindObjectOfType<Player>();
+        _weapon = weapon;
+        Debug.Log($"{_weapon} has been initialized");
     }
 
-    public override void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Unit unit = collision.GetComponent<Unit>();
-        if (unit != null)
+        if (collision.GetComponent<Inventory>() != null)
         {
-            if (!unit._hasPrimary && (gunType == GunType.AutomaticRifle || gunType == GunType.Shotgun))
-            {
-                GameObject newGun = Instantiate(guns[(int)gunType], unit._handle.transform.position, Quaternion.identity, unit.transform);
-                unit._hasPrimary = true;
-                unit._primaryGun = newGun;
-                newGun.transform.localEulerAngles = Vector3.zero;
-                hud.GunCheck();
-                player.swapToPrimary();
-                base.OnTriggerEnter2D(collision);
-            }
-
-            if (!unit._hasSecondary && gunType == GunType.Pistol)
-            {
-                GameObject newGun = Instantiate(guns[(int)gunType], unit._handle.transform.position, Quaternion.identity, unit.transform);
-                unit._hasSecondary = true;
-                unit._secondaryGun = newGun;
-                newGun.transform.localEulerAngles = Vector3.zero;
-                hud.GunCheck();
-                player.swapToPrimary();
-                base.OnTriggerEnter2D(collision);
-            }
-        }
-        else if (collision.CompareTag("Enemy"))
-        {
-            base.OnTriggerEnter2D(collision);
+            Inventory playerInventory = collision.GetComponent<Inventory>();
+            playerInventory.LootWeapon(_weapon);
+            Destroy(gameObject);
         }
     }
 }

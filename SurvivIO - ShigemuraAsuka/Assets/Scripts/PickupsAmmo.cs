@@ -2,49 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GunType
+public class PickupsAmmo : MonoBehaviour
 {
-    Pistol,
-    Shotgun,
-    AutomaticRifle
-}
+    [SerializeField] protected Weapon _weapon;
 
-public enum AmmoType
-{
-    PistolAmmo,
-    ShotgunAmmo,
-    RifleAmmo
-}
-
-public class PickupsAmmo : Pickups
-{
-    public AmmoType ammoType;
-    public int ammoToAdd;
-
-    public override void OnTriggerEnter2D(Collider2D collision)
+    public virtual void Initialize(Weapon weapon)
     {
-        Unit unit = collision.GetComponent<Unit>();
-        if (unit != null)
-        {
-            Gun _primaryGun = unit._primaryGun.GetComponent<Gun>();
-            if (unit._hasPrimary && (int)_primaryGun.gunType == (int)ammoType)
-            {
-                _primaryGun.currentAmmo += ammoToAdd;
-                base.OnTriggerEnter2D(collision);
-            }
+        _weapon = weapon;
+        Debug.Log($"{_weapon} has been initialized");
+    }
 
-            Gun _secondaryGun = unit._secondaryGun.GetComponent<Gun>();
-            if (unit._hasSecondary && (int)_secondaryGun.gunType == (int)ammoType)
-            {
-                _secondaryGun.currentAmmo += ammoToAdd;
-                base.OnTriggerEnter2D(collision);
-            }
-        }
-
-        Enemy enemy = collision.GetComponent<Enemy>();
-        if (enemy != null)
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.GetComponent<Inventory>() != null)
         {
-            base.OnTriggerEnter2D(collision);
+            Inventory playerInventory = collision.GetComponent<Inventory>();
+            playerInventory.AddAmmo(_weapon);
+            Destroy(gameObject);
         }
     }
 }

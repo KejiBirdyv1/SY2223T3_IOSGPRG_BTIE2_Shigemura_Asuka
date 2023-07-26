@@ -8,8 +8,8 @@ public class CameraFollow : MonoBehaviour
     {
         //Camera World Boundary 
         transform.position = new Vector3(
-            Mathf.Clamp(target.position.x, -21f, 21f),
-            Mathf.Clamp(target.position.y, -25f, 25f),
+            Mathf.Clamp(target.position.x, -41f, 41f),
+            Mathf.Clamp(target.position.y, -32.45f, 32.45f),
             transform.position.z);
     }
 }
