@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3069614302632644907}
   - component: {fileID: 3069614302632644905}
   - component: {fileID: 3069614302632644906}
+  - component: {fileID: -465258038424646116}
   - component: {fileID: 6786187028066520911}
   m_Layer: 0
   m_Name: 9mm
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 880f76913e15b4f48adbd50b5ad09c17, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -112,6 +113,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.83, y: 6.83}
   m_EdgeRadius: 0
+--- !u!50 &-465258038424646116
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3069614302632644908}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &6786187028066520911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -124,6 +146,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0dd6417f3ae0914eac5c3cc46418607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guns: []
-  ammoType: 0
-  ammoToAdd: 15
+  _weapon: 0

@@ -292,7 +292,7 @@ MonoBehaviour:
   currentGun: {fileID: 5262809548858483337}
   missilePrefab: {fileID: 6010885659223740568, guid: 79a29320e19a94444802c519e2c86437, type: 3}
   nozzle: {fileID: 2654856510629972868}
-  rocketLauncherPickUp: {fileID: 7766430557976838123}
+  rocketLauncherPickUp: {fileID: 1472019516047548279, guid: 7542b598ae2fab44ba1a10ef09fedb9c, type: 3}
 --- !u!114 &6060050572661733142
 MonoBehaviour:
   m_ObjectHideFlags: 0

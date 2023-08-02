@@ -10,6 +10,7 @@ public class Bullet : MonoBehaviour
     private void Start()
     {
         speed = 15f;
+        Destroy(gameObject, 3f); // Destroy the bullet object after 3 seconds
     }
 
     private void Update()
