@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public static UIManager instance;
    
     [SerializeField] private Inventory inventory;
+    [SerializeField] private TextMeshProUGUI Remaining;
 
     [Header("Ammunition Text")]
     [SerializeField] private TextMeshProUGUI pistolAmmoCountText;
@@ -22,7 +23,10 @@ public class UIManager : MonoBehaviour
     [Header("Magazine Text")]
     [SerializeField] private TextMeshProUGUI magazineAmmoCountText;
     [SerializeField] private TextMeshProUGUI totalAmmoCountText;
-    public TextMeshProUGUI _reloadingText;
+
+    public GameObject HUD;
+    public GameObject gameOverScreen;
+    public TextMeshProUGUI reloadingText;
 
     private void Awake()
     {
@@ -40,7 +44,7 @@ public class UIManager : MonoBehaviour
     {
         primaryWeaponText.SetText("No Weapon");
         secondaryWeaponText.SetText("No Weapon");
-        _reloadingText.enabled = false;
+        reloadingText.enabled = false;
     }
 
     public void UpdateAmmoCount(Weapon weapon, int totalAmmoCount, int bagAmmoCount, int magazineAmmoCount)
@@ -56,7 +60,7 @@ public class UIManager : MonoBehaviour
                         inventory.gunTypes[(int)Weapon.Pistol])
                     {
                         inventory.StartCoroutine("ReloadCurrentGun");
-                        _reloadingText.enabled = true;
+                        reloadingText.enabled = true;
                     }
                     magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
                     totalAmmoCountText.SetText(bagAmmoCount.ToString());
@@ -71,7 +75,7 @@ public class UIManager : MonoBehaviour
                         inventory.gunTypes[(int)Weapon.AutomaticRifle])
                     {
                         inventory.StartCoroutine("ReloadCurrentGun");
-                        _reloadingText.enabled = true;
+                        reloadingText.enabled = true;
                     }
                     magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
                     totalAmmoCountText.SetText(bagAmmoCount.ToString());
@@ -86,7 +90,7 @@ public class UIManager : MonoBehaviour
                         inventory.gunTypes[(int)Weapon.Shotgun])
                     {
                         inventory.StartCoroutine("ReloadCurrentGun");
-                        _reloadingText.enabled = true;
+                        reloadingText.enabled = true;
                     }
                     magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
                     totalAmmoCountText.SetText(bagAmmoCount.ToString());
@@ -121,12 +125,17 @@ public class UIManager : MonoBehaviour
             inventory.StartCoroutine("ReloadCurrentGun");
             magazineAmmoCountText.SetText("0");
             totalAmmoCountText.SetText(bagAmmoCount.ToString());
-            _reloadingText.enabled = true;
+            reloadingText.enabled = true;
         }
         else
         {
             magazineAmmoCountText.SetText(magazineAmmoCount.ToString());
             totalAmmoCountText.SetText(bagAmmoCount.ToString());
         }
+    }
+
+    public void UpdateRemaining(int amount)
+    {
+        Remaining.SetText(amount.ToString());
     }
 }

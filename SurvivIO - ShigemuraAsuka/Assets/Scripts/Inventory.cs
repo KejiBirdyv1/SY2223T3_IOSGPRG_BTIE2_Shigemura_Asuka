@@ -108,7 +108,7 @@ public class Inventory : MonoBehaviour
         }
 
         player.isReloading = false;
-        UIManager.instance._reloadingText.enabled = false;
+        UIManager.instance.reloadingText.enabled = false;
     }
 
     public void UseHealthKit()

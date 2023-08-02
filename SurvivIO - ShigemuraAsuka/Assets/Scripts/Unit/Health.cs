@@ -22,11 +22,6 @@ public class Health : MonoBehaviour
         CurrentHealth -= damage;
         CurrentHealth = Mathf.Max(CurrentHealth, 0);
         UpdateHealthBar();
-
-        if (CurrentHealth <= 0)
-        {
-            DoDeath();
-        }
     }
 
     public void AddHealth(int amount)
@@ -42,10 +37,5 @@ public class Health : MonoBehaviour
         {
             healthBar.fillAmount = CurrentHealth / MaxHealth;
         }
-    }
-
-    private void DoDeath()
-    {
-        // Implement death behavior here if needed.
     }
 }

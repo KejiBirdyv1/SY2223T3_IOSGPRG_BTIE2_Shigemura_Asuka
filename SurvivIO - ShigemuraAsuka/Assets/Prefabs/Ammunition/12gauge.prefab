@@ -124,6 +124,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0dd6417f3ae0914eac5c3cc46418607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guns: []
-  ammoType: 1
-  ammoToAdd: 4
+  _weapon: 0

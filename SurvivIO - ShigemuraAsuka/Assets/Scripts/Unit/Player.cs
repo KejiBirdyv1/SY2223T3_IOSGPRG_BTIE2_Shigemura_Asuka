@@ -54,7 +54,7 @@ public class Player : Unit
 
     public override void DoDeath()
     {
-        base.DoDeath();
+        GetComponent<PlayerController>().enabled = false;
         GetComponent<CircleCollider2D>().enabled = false;
     }
 }

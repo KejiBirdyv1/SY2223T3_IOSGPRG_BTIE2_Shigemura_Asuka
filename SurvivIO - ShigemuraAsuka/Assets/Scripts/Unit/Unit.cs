@@ -49,6 +49,6 @@ public class Unit : MonoBehaviour
 
     public virtual void DoDeath()
     {
-        // Put death behavior here if needed.
+
     }
 }
